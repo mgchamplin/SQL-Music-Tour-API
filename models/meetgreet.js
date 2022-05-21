@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
      static associate({Band, Event}) {
           MeetGreet.belongsTo(Band, {
             foreignKey: "band_id",
-            as: "band"
+            as: "bands"
           })
           MeetGreet.belongsTo(Event, {
             foreignKey: "event_id",
-            as: "event"
+            as: "events"
           })
       }
     }
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'MeetGreet',
-    tableName: 'meetgreet',
+    tableName: 'meetgreets',
     timestamps: false
   });
   return MeetGreet;

@@ -1,10 +1,11 @@
 // DEPENDENCIES
 const bands = require('express').Router()
 const db = require('../models')
-const { Band } = db 
+const { Band, MeetGreet, Event, SetTime, Stage } = db 
 
 // DEPENDENCIES 
 const { Op } = require('sequelize')
+const { EventEmitter } = require('pg/lib/query')
    
 // FIND ALL BANDS
 // FIND ALL BANDS
@@ -25,10 +26,34 @@ bands.get('/', async (req, res) => {
 
 
 // FIND A SPECIFIC BAND
-bands.get('/:id', async (req, res) => {
+bands.get('/:name', async (req, res) => {
     try {
         const foundBand = await Band.findOne({
-            where: { band_id: req.params.id }
+            where: { name: req.params.name  },
+
+            include: [ 
+                { 
+                    model: MeetGreet, 
+                    as: "meetgreets",
+                    
+                    include: { 
+                        model: Event,
+                        as: "events",
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    } 
+                },
+                { 
+                    model: SetTime,
+                    as: "settimes",
+                    
+                    include: { 
+                        model: Event, 
+                        as: "events",
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    }
+                }
+            ] 
+
         })
         res.status(200).json(foundBand)
     } catch (error) {
@@ -85,3 +110,4 @@ bands.delete('/:id', async (req, res) => {
 
 // EXPORT
 module.exports = bands
+
