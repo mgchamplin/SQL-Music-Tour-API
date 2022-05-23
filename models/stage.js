@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "stage_id",
         as: "settimes",
       })
+      Stage.hasMany(StageEvents, {
+        foreignKey: "stage_event_id",
+        as: "stageevents",
+      })
   }
 }
   Stage.init({
